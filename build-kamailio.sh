@@ -37,8 +37,7 @@ pushd $_
 	tee DEBIAN/control <<'EOF'
 Package: kamailio-dbkazoo-modules
 Version: 5.0.3+stretch+b1
-Architecture: linux-any
-Multi-Arch: foreign
+Architecture: any
 Depends: kamailio (>= 5.0.3+stretch+b1)
 Maintainer: Joe Black <me@joeblack.nyc>
 Description: DBKazoo module for Kamailio SIP server
@@ -126,8 +125,7 @@ pushd $_
 		tee DEBIAN/control <<'EOF'
 Package: kamailio-kazoo-configs
 Version: 5.0.3+stretch+b1-4.2
-Architecture: linux-any
-Multi-Arch: foreign
+Architecture: any
 Depends: kamailio (>= 5.0.3+stretch+b1)
 Maintainer: Joe Black <me@joeblack.nyc>
 Description: Kazoo configs for Kamailio SIP server
@@ -139,6 +137,22 @@ Description: Kazoo configs for Kamailio SIP server
 
 EOF
 
+
+		tee DEBIAN/preinst <<'EOF'
+#!/bin/sh
+
+set -e
+
+case "$1" in
+    install)
+		rm -rf /etc/kazoo/*
+    	;;
+esac
+
+exit 0
+
+EOF
+
 		tee DEBIAN/postinst <<'EOF'
 #!/bin/sh
 
@@ -147,7 +161,7 @@ set -e
 case "$1" in
     configure)
 		chown -R kamailio:kamailio /etc/kamailio
-		chmod -R 0700 /etc/kamailio/tls
+		chmod -R 0700 /etc/kamailio/certs
     	;;
 esac
 
@@ -155,7 +169,7 @@ exit 0
 
 EOF
 
-		chmod 0755 DEBIAN/postinst
+		chmod 0755 DEBIAN/{preinst,postinst}
 		popd
 
 	dpkg-deb --build kamailio-kazoo-configs*
