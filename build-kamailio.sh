@@ -37,7 +37,7 @@ pushd $_
 	tee DEBIAN/control <<'EOF'
 Package: kamailio-dbkazoo-modules
 Version: 5.0.3+stretch+b1
-Architecture: any
+Architecture: amd64
 Depends: kamailio (>= 5.0.3+stretch+b1)
 Maintainer: Joe Black <me@joeblack.nyc>
 Description: DBKazoo module for Kamailio SIP server
@@ -125,7 +125,7 @@ pushd $_
 		tee DEBIAN/control <<'EOF'
 Package: kamailio-kazoo-configs
 Version: 5.0.3+stretch+b1-4.2
-Architecture: any
+Architecture: amd64
 Depends: kamailio (>= 5.0.3+stretch+b1)
 Maintainer: Joe Black <me@joeblack.nyc>
 Description: Kazoo configs for Kamailio SIP server
