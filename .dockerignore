@@ -1,0 +1,8 @@
+dist/
+scripts/
+.*/
+.*
+*.md
+*.rst
+Makefile
+Dockerfile.*

@@ -1,0 +1,41 @@
+language: python
+services: docker
+env:
+  global:
+  - KAZOO_CONFIGS_BRANCH=4.2
+  - DOCKER_USER=joeblackwaslike
+  - DOCKER_ORG=telephoneorg
+  - secure: DQWNF/ZPt89+lvP8eX8/boPi7Xf1KLa7KeQDwetQ058VtepO5w4T6A3GZitZIU2OZaYahSGfemE5M26Hhv4r/zG3nVqkS4GAMa6SyLWryjMCDwxYxxsDQv9wztNTm9hQrxZe9nEbNWQuZg7bMo3va+rYQt02WZs+MZPxtTAIDwbXLCsR22bPwaB+Qm+ksf7cKzOoUHDZVU8TN/QVxQyFDZh8AaExEDRaxw3SgcI6zUpRkKat9Pjgllwd5cW+hO+ynbmYcgZBORMwlu5nTIDaXx7x+tBjvYVP19izitqzDsSNuUstY6l0cU2Sf6p/JCZhDcTYyR0tHdga4VUhe9/J7ZqPYQuCdJ1K/aB19pFN/OEFltSIKPVO3I8HweCHOt+ixAoFIc5A3+FP+v7+EIjLmQrJDNQvpGVTy9p2eM309O36YZY1Qb2xNC3a9efvVYDNfK+9/dEgjkbDcNbL+1azX+xtElr7fVLaU08EbdrMxFEXSUmd1PER9nCGSWDoSf4tTNx7btf8DW4PAfJvoBIaQFaIFUcLVu8cval8P8KXgnQOCTdBYbwBucJnAIWwt8PcjSqlm145X4NbggfQJRc7KxdsFRy+UEAQOhoC3rfO0TNbLAk14XkDbLZ0Y/JBBKCy635yCl9fNSsz/9V/biLmjJebRdMUotGxADQl5ndgNh4=
+
+notifications:
+  email:
+    on_success: never
+    on_failure: always
+  slack:
+    rooms:
+    - secure: a/L1tMYOWzom0khlkLFHG+Ldc0pLcWIWW+nKJqnozkK+oaVHjtkIX+jk+EQvZI7Pd1/69/SlHXUo1AJKVpfOg8pjW0n63eCe2m6rxlpzIyyBxDYoJ+PdjFSnYe2X85UuuxtxqNxA17BF0Iv/ACUjQWBWF3tkwQSCmHL5D3UDntH17ELy3/eWq2zgaCFUk9gXYelDTUXZGYO82/Wy7kq+D+Mq7DEYPw3VFFzeA0g23SbAS5SZMxVJDc+aHsFoyVR93HSee+7n5IXr2npamTQYZcc0mIPAlTA+9IgZ/xAFzWf3beN+MwKnyyNWVBm72xuAjww3EELeS5NfjMIv5PDYgTEgVspHJrrjF52ej0Bpz11WOzaFG2dL3SyTsZ8puEv36l5NZ/yu8B3Y9eDxK3BWzfoaxFxaesvF7X7A+KWPETKV2o4egBmGNFXZInySTgznZ95nnDs3uVwkm++ZeH4OMw3syrtel2D1XJSGknvhavlZ3sf8pNOgUNp8IgcJOzSR8+Zmh/09bzwenZVF+EUflkeyFJNslE6DTri6NbUOvmepACLJupPNCDvuTaFahTre4oSee0Dsj/GVhgoYVYIpTFqHLVXUiqo14+w0oGfXzozzvjFL0dcARbOZKzeoCanqM1fUYrNyEL2gdFedHlq0Fpz/aR6MD+l3BDGBS8VZypQ=
+    on_success: always
+    on_failure: always
+
+before_install: source scripts/ci/environment.sh
+install: make
+
+script: true
+after_success:
+- ci-tag-build
+- hub-push
+- hub-update-readme
+
+deploy:
+  provider: releases
+  api_key:
+    secure: NFMOnM7oIhqF5GqcKPMOLswODiIGTS7CTlE6R0An0QvDHb7uWFKOb0TI2eHM+yF2pzZ2usZwHmkHxQSMrRjRCE7lmDOJOdjevq7p0/uh6CHzqcLHyKR6JL2L1R6ed8dByB3gfbWk/1oRUQngTLkSEOWk/6Stj/4OtpiwK7URMzlE7JDa+V3X6kKSOuENHPlDEXEr6iZ3H72NmcgXPxcKK1Fnu5s0H/T8jpfGC5hceiVu90EVwsduqWTqIfNXZP9AdX1JrPoTNv/8vOr2lVTDRRtug1iMzhPo/bl8Nnl5J2a43/gP1PoKZUXiJ0Rphg8rKbSVYxKLlOU/HqUjpyENtxQj9kYpLjUwZV5koSQbZJhjUqmTrCtnMEJ/FFGNpFbYJ3JjeBwhZGBA5wOWRzpAu4a90rj7cYsAAsg/3LoZ7RBtXMwL+szxx364KTRw88ZgNF7B34R1igMesTG8vLObrlldgVTys3piqq+PW6vc4J7l6duCpjaHuCWEP3w9331mlHbSg/TfHiUXMPU/VZCDSNt74HamtnS6tJheDs4bUDFPDwzBElUPvk8p1nbEfYxVMkdbACmHzZT1F74O8Weo3Os1A3NOSZmh0z5AL76Gf0HT3zXS6X/vCtwiYMjmyEuwaUz6/KcMhLMxAt5HdvdicVOYGCOdYWOC8FHRRfvJjD0=
+  file_glob: true
+  file: dist/*
+  skip_cleanup: true
+  on:
+    repo: telephoneorg/kamailio-builder
+    tags: true
+
+# after_deploy:
+# - Trigger docker-kamailio build
